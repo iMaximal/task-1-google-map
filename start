@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo './start [development | dist]'
+    exit
+fi
+
+if [ $1 == 'development' ]; then
+    export NODE_ENV=development
+    export NODE_WATCH=true
+    npm run dev
+elif [ $1 == 'dist' ]; then
+    export NODE_ENV=production
+    export NODE_WATCH=false
+    npm run dist
+else
+    echo './start [development | dist]'
+    exit
+fi

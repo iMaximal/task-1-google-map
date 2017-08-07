@@ -1,0 +1,150 @@
+/* Optional Makes the sample page fill the window. */
+html, body
+    height 100%
+    margin 0
+    padding 0
+    font-size 14px
+    font-family sans-serif
+
+
+#box
+    z-index 999
+    position fixed
+    left 0
+    top 0
+    width 100%
+    height 100%
+    background gray
+    opacity 0.4
+
+div[data-reactroot]
+    height 100%
+
+
+#app
+    height 100%
+
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+.main
+    display inline-block
+    float left
+    height 100%
+    width 60%
+
+
+#floating-panel
+    position absolute
+    top 10px
+    left 25%
+    z-index 5
+    background-color #fff
+    padding 5px
+    border 1px solid #999
+    text-align center
+    font-family 'Roboto','sans-serif'
+    line-height 30px
+    padding-left 10px
+
+
+#right-side
+    display inline-block
+    float left
+    box-sizing border-box
+    padding 1% 0 0 0.5%
+    width 40%
+
+
+.tooltip
+    position absolute
+    z-index 7000
+
+
+.input__point
+    padding 5px
+    width 100%
+
+
+.edit-controls
+    display inline
+
+
+button
+    height 29px
+    margin 5px 2px 0 2px
+
+ul
+    list-style none
+
+.right-side__list
+    list-style none
+    padding 0
+    margin-left 15px
+
+
+.right-side__list li
+    padding 10px
+    border-bottom 1px solid #E7E7E7
+    margin-bottom 2px
+
+
+linth-child(odd)
+    display block
+    opacity 0.9
+
+
+.right-side__pointhover
+    box-shadow 0 0 6px #B1B1B1
+
+
+.right-side__point.checked
+    background rgba(0, 195, 255, 0.54)
+
+
+.controls-container
+    margin-top 10px
+
+
+.controls
+    color #828282
+
+
+.edit-li .edit-area
+    width: 98%;
+    min-height: 30px;
+    border 1px solid #888
+    margin 0
+    padding 0
+    display block
+    resize none
+    /* remove resizing handle in Firefox */
+
+
+.edit-li
+    position relative
+    z-index: 9999
+    margin-bottom 30px
+    padding 0
+
+
+/**
+ Some adaptive
+ */
+@media screen and (max-width 768px)
+    #map
+        height 73%
+        width 100%
+
+    #right-side
+        box-sizing border-box
+        padding 1% 0 0 0
+        width 100%
+
+    .right-side__list
+        margin-left 0
+
+    #floating-panel
+        display none
+
+
+
