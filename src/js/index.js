@@ -7,7 +7,7 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 
 
 import { store, history } from './store'
-import * as routes from './routes'
+import * as routes from './components'
 
 render(
     <Provider store={store}>

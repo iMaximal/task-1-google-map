@@ -1,6 +1,6 @@
 {
   "name": "task-1-google-map",
-  "version": "0.0.6",
+  "version": "0.1.6",
   "description": "React Google Map SPA",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,6 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "express-useragent": "^1.0.7",
-    "fetch-to-request": "^2.0.1",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-if": "^2.0.2",
@@ -51,7 +50,6 @@
     "morgan": "^1.8.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "react-google-maps": "^7.2.0",
     "react-redux": "^5.0.3",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.1.1",
