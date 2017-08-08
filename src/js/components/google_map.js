@@ -335,6 +335,7 @@ export default class GoogleMap extends Component {
                 <div ref={(map) => {
                     this._mapContainer = map
                 }} className="main"/>
+
                 <div id="right-side">
                     <ul className="right-side__list">
 
@@ -349,7 +350,7 @@ export default class GoogleMap extends Component {
                                     </textarea>
                                     <div className="edit-controls">
                                         <button
-                                            className="edit-point-ok">OK
+                                            className="edit-ok">OK
                                         </button>
                                     </div>
                                 </form>
@@ -362,6 +363,7 @@ export default class GoogleMap extends Component {
                                                onClick={this.markPointFromList}
                                                key={Math.random()}
                                                className={this.state.checkedPoint === point.id ? 'right-side__point checked' : 'right-side__point'}>
+
                             {this.state.editablePoint === point.id &&
                             <div className="edit-li">
                                 <form data-id={point.id}
@@ -372,7 +374,7 @@ export default class GoogleMap extends Component {
                                                value={pointName}>
                                      </textarea>
                                     <div className="edit-controls">
-                                        <button className="edit-point-ok">OK</button>
+                                        <button className="edit-ok">OK</button>
                                     </div>
                                 </form>
                             </div>
@@ -411,12 +413,12 @@ export default class GoogleMap extends Component {
                                             <div className="edit-controls">
                                                 <button type="button"
                                                         onClick={this.handleNoteNewSave}
-                                                        className="edit-child-ok">OK
+                                                        className="edit-ok">OK
                                                 </button>
                                                 &nbsp;
                                                 <button type="button"
                                                         onClick={this.handleNoteCancel}
-                                                        className="edit-child-cancel">CANCEL
+                                                        className="edit-cancel">CANCEL
                                                 </button>
                                             </div>
                                         </form>
@@ -443,11 +445,11 @@ export default class GoogleMap extends Component {
                                                            value={noteName}>
                                                  </textarea>
                                                  <div className="edit-controls">
-                                                    <button className="edit-point-ok">OK
+                                                    <button className="edit-ok">OK
                                                     </button>
                                                     <button type="button"
                                                             onClick={this.handleNoteCancel}
-                                                            className="edit-child-cancel">CANCEL
+                                                            className="edit-cancel">CANCEL
                                                     </button>
                                                  </div>
                                             </form>
