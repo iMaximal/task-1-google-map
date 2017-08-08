@@ -39,6 +39,11 @@ gulp.task('react', done => {
         .on('data', end(done, DEBUG))
 })
 
+gulp.task('assets', () => {
+    return gulp.src('src/assets/**/*')
+        .pipe(gulp.dest('dist'))
+})
+
 gulp.task('stylus', () => {
     return gulp.src('src/stylus/base.styl')
         .pipe(plumber())
@@ -55,7 +60,7 @@ gulp.task('stylus', () => {
         .pipe(gulpif(!DEBUG, gulp.dest('manifest')))
 })
 
-gulp.task('dist', ['react', 'stylus'], () => {
+gulp.task('dist', ['react', 'assets', 'stylus'], () => {
     return gulp.src('src/index.html')
         .pipe(gulpif(!DEBUG, revReplace({
             manifest: gulp.src('manifest/react.json'),
@@ -67,6 +72,7 @@ gulp.task('dist', ['react', 'stylus'], () => {
 })
 
 gulp.task('watch', () => {
+    gulp.watch('src/assets/**/*', ['assets'])
     gulp.watch('src/index.html', ['dist'])
     gulp.watch('src/**/*.styl', ['stylus'])
 })

@@ -92,7 +92,7 @@ export default class GoogleMap extends Component {
         event.preventDefault()
 
         const pointName = this.state.pointName || 'Забыли назвать точку :-('
-        const id = event.target.dataset.id
+        const id = event.target.parentNode.parentNode.dataset.id
 
         this.props.dispatch({
             type: CHANGE_POINT,
@@ -141,7 +141,7 @@ export default class GoogleMap extends Component {
         event.preventDefault()
         // if editable field is exist -> nothing
         if (this.state.editablePoint || this.state.editableNote) return
-        const id = event.target.dataset.id
+        const id = event.target.parentNode.parentNode.dataset.id
         let elem = this.props.map.find(point => point.id === id)
         let name = elem.name
         this.setState({
@@ -158,7 +158,7 @@ export default class GoogleMap extends Component {
         event.preventDefault()
         // if EDIT -> no ACTION
         if (this.state.pointName) return
-        const id = event.target.dataset.id
+        const id = event.target.parentNode.parentNode.dataset.id
         let point = this.props.map.find(point => point.id === id)
         point.setMap(null)
         this.props.dispatch({
@@ -176,7 +176,7 @@ export default class GoogleMap extends Component {
     createNote = event => {
         event.preventDefault()
         if (this.state.editableNote) return
-        const id = event.target.dataset.id
+        const id = event.target.parentNode.parentNode.dataset.id
         this.setState(prevState => ({
             newNote: id
         }))
@@ -189,7 +189,7 @@ export default class GoogleMap extends Component {
     handleNoteNewSave = event => {
         event.preventDefault()
         const noteName = this.state.noteName || 'Какое интересное имя'
-        const parentId = event.target.dataset.id
+        const parentId = event.target.closest('li').dataset.id
         const makeId = Date.now() + Math.random().toString()
 
         this.props.dispatch({
@@ -216,8 +216,8 @@ export default class GoogleMap extends Component {
         event.preventDefault()
         // if editable field is exist -> nothing
         if (this.state.editablePoint || this.state.editableNote) return
-        const id = event.target.dataset.id
-        const noteId = event.target.dataset.nkey
+        const id = event.target.closest('li').dataset.id
+        const noteId = event.target.closest('li').dataset.nkey
         let elem = this.props.map.find(point => point.id === id)
         let name
         elem.notes.forEach(item => item.hasOwnProperty(noteId) ? name = item[noteId] : false)
@@ -252,8 +252,8 @@ export default class GoogleMap extends Component {
         event.preventDefault()
 
         const noteName = this.state.noteName || 'Нельзя менять на пустое имя'
-        const noteKey = event.target.dataset.nkey
-        const parentId = event.target.dataset.id
+        const noteKey = event.target.closest('li').dataset.nkey
+        const parentId = event.target.closest('li').dataset.id
 
         this.props.dispatch({
             type: CHANGE_NOTE,
@@ -279,8 +279,8 @@ export default class GoogleMap extends Component {
     handleNoteRemove = event => {
         event.preventDefault()
 
-        const parentId = event.target.dataset.id
-        const noteId = event.target.dataset.nkey
+        const parentId = event.target.closest('li').dataset.id
+        const noteId = event.target.closest('li').dataset.nkey
 
         this.props.dispatch({
             type: DELETE_NOTE,
@@ -302,7 +302,8 @@ export default class GoogleMap extends Component {
             center: {lat: 56.840375, lng: 60.568951},
             mapTypeId: 'terrain'
         })
-        this.setState({mapInitialized: true})
+
+        this.setState({ mapInitialized: true })
 
         // Define an info window on the map.
         this._infoWindow = new window.google.maps.InfoWindow()
@@ -340,8 +341,7 @@ export default class GoogleMap extends Component {
                         {newPoint && <li data-id={newPoint}
                                          className="right-side__point">
                             <div className="edit-li">
-                                <form data-id={newPoint}
-                                      onSubmit={this.handlePointSave}>
+                                <form onSubmit={this.handlePointSave}>
                                     <textarea autoFocus type="text"
                                               className="edit-area"
                                               onChange={this.handleInput}
@@ -368,7 +368,6 @@ export default class GoogleMap extends Component {
                                       onSubmit={this.handlePointSave}>
                                      <textarea autoFocus
                                                className="edit-area"
-                                               data-id={point.id}
                                                onChange={this.handleInput}
                                                value={pointName}>
                                      </textarea>
@@ -382,18 +381,15 @@ export default class GoogleMap extends Component {
                             </div>}
 
                             <div className="controls-container">
-                                <a data-id={point.id}
-                                   onClick={this.togglePointEditing}
+                                <a onClick={this.togglePointEditing}
                                    href=""
                                    className="controls"
                                    title="Edit">Edit</a>&nbsp;
-                                <a data-id={point.id}
-                                   onClick={this.createNote}
+                                <a onClick={this.createNote}
                                    href=""
                                    className="controls"
                                    title="Add">Add</a>&nbsp;
-                                <a data-id={point.id}
-                                   onClick={this.handlePointRemove}
+                                <a onClick={this.handlePointRemove}
                                    href=""
                                    className="controls"
                                    title="Remove">Remove</a>
@@ -401,11 +397,11 @@ export default class GoogleMap extends Component {
 
                             {this.state.newNote === point.id &&
                             <ul>
-                                <li>
+                                <li data-id={point.id}>
                                     <div className="edit-li">
-                                        <form data-id={point.id} onSubmit={this.handleNoteNewSave}>
+                                        <form onSubmit={this.handleNoteNewSave}>
                                             <div>
-                                            <textarea autoFocus data-id={point.id}
+                                            <textarea autoFocus
                                                       className="edit-area"
                                                       placeholder="Введите описание объекта"
                                                       onChange={this.handleInputNote}
@@ -415,7 +411,6 @@ export default class GoogleMap extends Component {
                                             <div className="edit-controls">
                                                 <button type="button"
                                                         onClick={this.handleNoteNewSave}
-                                                        data-id={point.id}
                                                         className="edit-child-ok">OK
                                                 </button>
                                                 &nbsp;
@@ -434,24 +429,25 @@ export default class GoogleMap extends Component {
                             {(point.notes.length !== 0) &&
                             <ul>
                                 {point.notes.map(note => Object.entries(note).map(([key, value]) => (
-                                    <li key={key} className="right-side__point">
+                                    <li key={key}
+                                        data-id={point.id}
+                                        data-nkey={key}
+                                        className="right-side__point">
+
                                         {this.state.editableNote === key &&
                                         <div className="edit-li">
-                                            <form data-id={point.id}
-                                                  data-nkey={key}
-                                                  onSubmit={this.handleNoteSave}>
+                                            <form onSubmit={this.handleNoteSave}>
                                                  <textarea autoFocus
-                                                     className="edit-area"
-                                                    onChange={this.handleInputNote} value={noteName}>
+                                                           className="edit-area"
+                                                           onChange={this.handleInputNote}
+                                                           value={noteName}>
                                                  </textarea>
                                                  <div className="edit-controls">
-                                                    <button data-id={point.id}
-                                                            data-nkey={key}
-                                                            className="edit-point-ok">OK
+                                                    <button className="edit-point-ok">OK
                                                     </button>
                                                     <button type="button"
-                                                             onClick={this.handleNoteCancel}
-                                                             className="edit-child-cancel">CANCEL
+                                                            onClick={this.handleNoteCancel}
+                                                            className="edit-child-cancel">CANCEL
                                                     </button>
                                                  </div>
                                             </form>
@@ -459,14 +455,10 @@ export default class GoogleMap extends Component {
                                         ||
                                         <div>{value}</div>}
                                         <div className="controls-container">
-                                            <a data-id={point.id}
-                                               data-nkey={key}
-                                               onClick={this.handleNoteEdit} href=""
+                                            <a onClick={this.handleNoteEdit} href=""
                                                className="controls"
                                                title="EditNotes">Edit</a> &nbsp;
-                                            <a data-id={point.id}
-                                               data-nkey={key}
-                                               onClick={this.handleNoteRemove}
+                                            <a onClick={this.handleNoteRemove}
                                                href=""
                                                className="controls"
                                                title="RemoveNotes">Remove</a>
