@@ -192,9 +192,6 @@ export default class GoogleMap extends Component {
         const noteName = this.state.noteName || 'Какое интересное имя'
         const parentId = event.target.closest('li').dataset.id
         const makeId = Date.now() + Math.random().toString()
-        console.log(noteName);
-        console.log(parentId);
-        console.log(makeId);
 
         this.props.dispatch({
             type: ADD_NOTE,
