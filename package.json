@@ -1,11 +1,11 @@
 {
   "name": "task-1-google-map",
-  "version": "0.1.6",
+  "version": "1.0.0",
   "description": "React Google Map SPA",
   "main": "index.js",
   "scripts": {
     "dev": "set NODE_ENV=development && gulp dev",
-    "dist": "set NODE_ENV=production && gulp dist",
+    "dist": "gulp dist",
     "start": "node ./index.js"
   },
   "repository": {

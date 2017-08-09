@@ -75,10 +75,11 @@ export default class GoogleMap extends Component {
      */
     markPointFromList = event => {
         let pointId = event.currentTarget.dataset.id
-        if (this.state.checkedPoint === pointId) return
-        this.setState({
-            checkedPoint: pointId
-        })
+        if (this.state.checkedPoint !== pointId) {
+            this.setState({
+                checkedPoint: pointId
+            })
+        }
 
         let elem = this.props.map.find(point => point.id === pointId)
         this._map.setCenter(elem.position)
@@ -191,6 +192,9 @@ export default class GoogleMap extends Component {
         const noteName = this.state.noteName || 'Какое интересное имя'
         const parentId = event.target.closest('li').dataset.id
         const makeId = Date.now() + Math.random().toString()
+        console.log(noteName);
+        console.log(parentId);
+        console.log(makeId);
 
         this.props.dispatch({
             type: ADD_NOTE,
@@ -303,15 +307,15 @@ export default class GoogleMap extends Component {
             mapTypeId: 'terrain'
         })
 
-        this.setState({ mapInitialized: true })
+        this.setState({mapInitialized: true})
 
         // Define an info window on the map.
         this._infoWindow = new window.google.maps.InfoWindow()
 
         // This event listener will call addMarker() when the map is clicked.
         this._map.addListener('click', event => {
-            // if editable field is exist -> nothing
-            if (this.state.editablePoint || this.state.editableNote) return
+                // if editable field is exist -> nothing
+                if (this.state.editablePoint || this.state.editableNote) return
                 this.addMarker(event.latLng)
             }
         )
@@ -319,11 +323,11 @@ export default class GoogleMap extends Component {
     }
 
     render() {
-        setTimeout(() => {
-            if (this.props.gapiLoaded && !this.state.mapInitialized) {
+        if (this.props.gapiLoaded && !this.state.mapInitialized) {
+            setTimeout(() => {
                 this._initMap()
-            }
-        }, 4)
+            }, 4)
+        }
 
         const {map} = this.props
         const {pointName} = this.state
@@ -331,14 +335,23 @@ export default class GoogleMap extends Component {
         const {newPoint} = this.state
 
         return (
+
             <div style={{height: `100%`}}>
+                {/**
+                 * Show the Google map
+                 */}
                 <div ref={(map) => {
                     this._mapContainer = map
                 }} className="main"/>
 
+                {/**
+                * Points and their Notes
+                */}
                 <div id="right-side">
                     <ul className="right-side__list">
-
+                        {/**
+                        * If New Point -> Show form -> Ask Point name
+                        */}
                         {newPoint && <li data-id={newPoint}
                                          className="right-side__point">
                             <div className="edit-li">
@@ -359,11 +372,16 @@ export default class GoogleMap extends Component {
                         </li>
                         }
 
+                        {/**
+                        * Show exist Points
+                        */}
                         {map.map(point => (<li data-id={point.id}
                                                onClick={this.markPointFromList}
                                                key={Math.random()}
                                                className={this.state.checkedPoint === point.id ? 'right-side__point checked' : 'right-side__point'}>
-
+                            {/**
+                            * If editable -> Show Edit form
+                            */}
                             {this.state.editablePoint === point.id &&
                             <div className="edit-li">
                                 <form data-id={point.id}
@@ -397,19 +415,20 @@ export default class GoogleMap extends Component {
                                    title="Remove">Remove</a>
                             </div>
 
+                            {/**
+                            * If Local State has newNote id -> Show Create form
+                            */}
                             {this.state.newNote === point.id &&
                             <ul>
                                 <li data-id={point.id}>
                                     <div className="edit-li">
                                         <form onSubmit={this.handleNoteNewSave}>
-                                            <div>
-                                            <textarea autoFocus
-                                                      className="edit-area"
-                                                      placeholder="Введите описание объекта"
-                                                      onChange={this.handleInputNote}
-                                                      value={noteName}>
+                                             <textarea autoFocus
+                                                       className="edit-area"
+                                                       placeholder="Введите описание объекта"
+                                                       onChange={this.handleInputNote}
+                                                       value={noteName}>
                                              </textarea>
-                                            </div>
                                             <div className="edit-controls">
                                                 <button type="button"
                                                         onClick={this.handleNoteNewSave}
@@ -428,6 +447,9 @@ export default class GoogleMap extends Component {
                             </ul>
                             }
 
+                            {/**
+                            * If Point has child -> Show their
+                            */}
                             {(point.notes.length !== 0) &&
                             <ul>
                                 {point.notes.map(note => Object.entries(note).map(([key, value]) => (
@@ -436,6 +458,9 @@ export default class GoogleMap extends Component {
                                         data-nkey={key}
                                         className="right-side__point">
 
+                                        {/**
+                                        * If Note editable -> Show form
+                                        */}
                                         {this.state.editableNote === key &&
                                         <div className="edit-li">
                                             <form onSubmit={this.handleNoteSave}>
@@ -444,14 +469,14 @@ export default class GoogleMap extends Component {
                                                            onChange={this.handleInputNote}
                                                            value={noteName}>
                                                  </textarea>
-                                                 <div className="edit-controls">
+                                                <div className="edit-controls">
                                                     <button className="edit-ok">OK
                                                     </button>
                                                     <button type="button"
                                                             onClick={this.handleNoteCancel}
                                                             className="edit-cancel">CANCEL
                                                     </button>
-                                                 </div>
+                                                </div>
                                             </form>
                                         </div>
                                         ||
@@ -478,9 +503,3 @@ export default class GoogleMap extends Component {
         )
     }
 }
-
-// export default connect(state => {
-//     return {
-//         map: state.map
-//     }
-// })(Main)
