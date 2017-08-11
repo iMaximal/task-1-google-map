@@ -2,20 +2,6 @@ import * as ACTIONS from '../constants'
 
 const initialState = []
 
-// const initialState = [{
-//     geo: {
-//         lat: 0,
-//         lng: 0
-//         ...
-//     },
-//     name: 'name',
-//     id: Date.now() + Math.random().toString()
-//     notes: [{
-//         id: Date.now() + Math.random().toString(),
-//         note: note
-//     }]
-// }]
-
 export default function (state = initialState, action) {
     switch (action.type) {
         case ACTIONS.ADD_POINT: {
@@ -41,7 +27,7 @@ export default function (state = initialState, action) {
 
         case ACTIONS.ADD_NOTE: {
             const {id, note, noteId} = action.payload
-            let newState = Array.from(state)
+            let newState = [...state]
             const index = newState.findIndex(point => point.id === id)
             let newNote = {
                 [noteId]: note
@@ -53,7 +39,7 @@ export default function (state = initialState, action) {
 
         case ACTIONS.CHANGE_NOTE: {
             const { id, note, noteId } = action.payload
-            let newState = Array.from(state)
+            let newState = [...state]
             const index = newState.findIndex(point => point.id === id)
             newState[index].notes.forEach(item => item.hasOwnProperty(noteId) ? item[noteId] = note : false)
             return newState
@@ -61,7 +47,7 @@ export default function (state = initialState, action) {
 
         case ACTIONS.DELETE_NOTE: {
             const {id, noteId} = action.payload
-            let newState = Array.from(state)
+            let newState = [...state]
             const index = newState.findIndex(point => point.id === id)
             newState[index].notes = newState[index].notes.filter(note => !note.hasOwnProperty(noteId))
             return newState

@@ -1,13 +1,12 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {
-    ADD_NOTE,
-    ADD_POINT,
-    CHANGE_POINT,
-    CHANGE_NOTE,
-    DELETE_NOTE,
-    DELETE_POINT
-} from '../constants'
+    addPoint,
+    changePoint,
+    deletePoint,
+    addNote,
+    changeNote,
+    deleteNote } from '../actions'
 
 @connect(({map}) => ({map}))
 export default class GoogleMap extends Component {
@@ -53,10 +52,8 @@ export default class GoogleMap extends Component {
             newPoint: markerId
         }))
 
-        this.props.dispatch({
-            type: ADD_POINT,
-            payload: marker
-        })
+        this.props.dispatch(addPoint(marker))
+
     }
 
     /**
@@ -95,13 +92,7 @@ export default class GoogleMap extends Component {
         const pointName = this.state.pointName || 'Забыли назвать точку :-('
         const id = event.target.parentNode.parentNode.dataset.id
 
-        this.props.dispatch({
-            type: CHANGE_POINT,
-            payload: {
-                id,
-                pointName
-            }
-        })
+        this.props.dispatch( changePoint(id, pointName) )
 
         this.setState({
             newPoint: false,
@@ -162,12 +153,8 @@ export default class GoogleMap extends Component {
         const id = event.target.parentNode.parentNode.dataset.id
         let point = this.props.map.find(point => point.id === id)
         point.setMap(null)
-        this.props.dispatch({
-            type: DELETE_POINT,
-            payload: {
-                id
-            }
-        })
+        this.props.dispatch(deletePoint(id))
+
     }
 
     /**
@@ -193,14 +180,7 @@ export default class GoogleMap extends Component {
         const parentId = event.target.closest('li').dataset.id
         const makeId = Date.now() + Math.random().toString()
 
-        this.props.dispatch({
-            type: ADD_NOTE,
-            payload: {
-                id: parentId,
-                note: noteName,
-                noteId: makeId
-            }
-        })
+        this.props.dispatch(addNote(parentId, noteName, makeId))
 
         this.setState({
             newNote: false,
@@ -256,14 +236,7 @@ export default class GoogleMap extends Component {
         const noteKey = event.target.closest('li').dataset.nkey
         const parentId = event.target.closest('li').dataset.id
 
-        this.props.dispatch({
-            type: CHANGE_NOTE,
-            payload: {
-                id: parentId,
-                note: noteName,
-                noteId: noteKey
-            }
-        })
+        this.props.dispatch(changeNote(parentId, noteName, noteKey))
 
         this.setState({
             newNote: false,
@@ -283,13 +256,8 @@ export default class GoogleMap extends Component {
         const parentId = event.target.closest('li').dataset.id
         const noteId = event.target.closest('li').dataset.nkey
 
-        this.props.dispatch({
-            type: DELETE_NOTE,
-            payload: {
-                id: parentId,
-                noteId: noteId
-            }
-        })
+        this.props.dispatch(deleteNote(parentId, noteId))
+
     }
 
     /**
@@ -427,8 +395,7 @@ export default class GoogleMap extends Component {
                                                        value={noteName}>
                                              </textarea>
                                             <div className="edit-controls">
-                                                <button type="button"
-                                                        onClick={this.handleNoteNewSave}
+                                                <button type="submit"
                                                         className="edit-ok">OK
                                                 </button>
                                                 &nbsp;

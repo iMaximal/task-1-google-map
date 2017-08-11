@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
 import GoogleMap from './google_map'
 
-@connect(({map}) => ({map}))
 export default class Main extends Component {
     constructor(props) {
         super(props)
