@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import GoogleMap from './google_map'
+import GoogleMap from '../components/google_map'
+
 
 export default class Main extends Component {
     constructor(props) {
@@ -14,9 +15,9 @@ export default class Main extends Component {
      * If Google Maps API loaded -> Change local state -> Transfer state as prop to Child component
      */
     componentWillMount() {
-            this.loadApiScript().then(() => {
-                this.setState({gapiLoaded: true})
-            })
+        this.loadApiScript().then(() => {
+            this.setState({gapiLoaded: true})
+        })
     }
 
     loadApiScript() {
@@ -40,8 +41,4 @@ export default class Main extends Component {
     }
 }
 
-// export default connect(state => {
-//     return {
-//         map: state.map
-//     }
-// })(Main)
+

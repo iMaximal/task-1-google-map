@@ -1,1 +1,1 @@
-export map from './map'
+export markers from './markers'
