@@ -1,4 +1,4 @@
-#Google Map with React + Redux
+# Google Map with React + Redux
 
 ## Installation
 ```bash
