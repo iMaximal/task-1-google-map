@@ -39,7 +39,9 @@ export default class PointItem extends Component {
 
         const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-('
         this.props.onPointSave(event, pointName)
-        this.setState({pointName: ''})
+        this.setState({
+            pointName: ''
+        })
     }
 
     /**
@@ -129,83 +131,6 @@ export default class PointItem extends Component {
         })
     }
 
-    /**
-     * If click Edit note -> get Note name from Global store for edit form -> Save & mark input in Local state
-     * @param event
-     */
-    handleNoteEdit = (event) => {
-        event.preventDefault()
-        // if editable field is exist -> nothing
-        if (this.props.map.editablePoint || this.props.map.editableNote) return
-        const id = event.target.closest('li').dataset.id
-        const noteId = event.target.closest('li').dataset.nkey
-        let elem = this.props.markers.find(point => point.id === id)
-        let name
-        elem.notes.forEach(item => item.hasOwnProperty(noteId) ? name = item[noteId] : false)
-        this.props.dispatch(finishEdit({ //todo change name in all files
-            editableNote: noteId
-        }))
-        this.setState({
-            noteName: name,
-        })
-
-    }
-
-    /**
-     * Cancel edit -> Change local params to null -> Data from Global store (nothing change)
-     * @param event
-     */
-    handleNoteCancel = (event) => {
-        event.preventDefault()
-
-        this.props.dispatch(finishEdit({ //todo change name in all files
-            newNote: false,
-            editableNote: null
-        }))
-
-        this.setState({
-            noteName: '',
-        })
-
-    }
-
-    /**
-     * Write Note data from Local state to Global store
-     * @param event
-     */
-    handleNoteSave = (event) => {
-        event.preventDefault()
-
-        const noteName = this.state.noteName || 'Нельзя менять на пустое имя'
-        const noteKey = event.target.closest('li').dataset.nkey
-        const parentId = event.target.closest('li').dataset.id
-
-        this.props.dispatch(changeNote(parentId, noteName, noteKey))
-
-        this.props.dispatch(finishEdit({ //todo change name in all files
-            newNote: false,
-            editableNote: null
-        }))
-
-        this.setState({
-            noteName: '',
-        })
-    }
-
-    /**
-     * Delete Note from Global store
-     * @param event
-     */
-    handleNoteRemove = (event) => {
-        event.preventDefault()
-
-        const parentId = event.target.closest('li').dataset.id
-        const noteId = event.target.closest('li').dataset.nkey
-
-        this.props.dispatch(deleteNote(parentId, noteId))
-
-    }
-
 
     render() {
 
@@ -284,15 +209,7 @@ export default class PointItem extends Component {
 
                 {(this.props.point.notes.length !== 0) &&
                 <NoteItem notes={notes}
-                          newNote={this.props.map.newNote}
                           parentId={id}
-                          noteName={this.state.noteName}
-                          editableNote={this.props.map.editableNote}
-                          onNoteSave={this.handleNoteSave}
-                          onNoteCancel={this.handleNoteCancel}
-                          onInputNote={this.InputNotehandler}
-                          onNoteEdit={this.handleNoteEdit}
-                          onNoteRemove={this.handleNoteRemove}
                 />
                 }
             </li>

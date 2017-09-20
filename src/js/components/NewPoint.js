@@ -36,7 +36,9 @@ export default class NewPoint extends PureComponent {
 
         const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-('
         this.props.onPointSave(event, pointName)
-        this.setState({pointName: ''})
+        this.setState({
+            pointName: ''
+        })
     }
 
     render() {

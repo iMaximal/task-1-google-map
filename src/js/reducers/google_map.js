@@ -1,12 +1,12 @@
 import * as ACTIONS from '../constants/constants'
 
 const initialState = {
+    checkedPoint: null,
+    editablePoint: null,
+    editableNote: null,
     gApiLoaded: false,
     mapInitialized: false,
     newPoint: false,
-    pointName: '',
-    editablePoint: null,
-    checkedPoint: null
 }
 
 export default function map(state = initialState, action) {
