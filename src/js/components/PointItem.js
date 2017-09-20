@@ -78,8 +78,10 @@ export default class PointItem extends Component {
         let name = elem.name
         this.props.dispatch(finishEdit({ //todo change name in all files
             editablePoint: id,
-            pointName: name
         }))
+        this.setState({
+            pointName: name
+        })
     }
 
     /**
@@ -225,7 +227,7 @@ export default class PointItem extends Component {
                                      <textarea autoFocus
                                                className="edit-area"
                                                onChange={this.InputPointHandler}
-                                               value={this.props.pointName}>
+                                               value={this.state.pointName}>
                                      </textarea>
                         <div className="edit-controls">
                             <button className="edit-ok">OK</button>
