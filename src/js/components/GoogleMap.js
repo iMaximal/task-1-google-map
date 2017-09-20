@@ -18,14 +18,6 @@ export default class GoogleMap extends Component {
     constructor(props) {
         super(props)
 
-        // this.state = {
-        //     mapInitialized: false,
-        //     newPoint: false,
-        //     pointName: '',
-        //     editablePoint: null,
-        //     checkedPoint: null
-        // }
-
         this._mapContainer = null
         this._map = null
         this._infoWindow = null
@@ -45,7 +37,7 @@ export default class GoogleMap extends Component {
         })
 
         marker.addListener('click', () => {
-            let contentString = marker.name
+            const contentString = marker.name
             // Set the info window's content and position.
             this._infoWindow.setContent(contentString)
             this._infoWindow.open(this._map, marker)
@@ -80,15 +72,19 @@ export default class GoogleMap extends Component {
         this._map.setCenter(elem.position)
     }
 
-    /**
-     * If click Edit Point -> Local state mark Point editable
-     */
-    handlePointEditing = (id, name) => {
-        this.setState({ //todo
-            editablePoint: id,
-            pointName: name
-        })
+    handlePointSave = (event, pointName) => {
+        event.preventDefault()
+
+        const id = event.target.parentNode.parentNode.dataset.id
+
+        this.props.dispatch(changePoint(id, pointName))
+        this.props.dispatch(finishEdit({
+            newPoint: false,
+            editablePoint: null
+        }))
+
     }
+
 
     /**
      * Create Map Object if Google API loaded
@@ -145,7 +141,7 @@ export default class GoogleMap extends Component {
                         {/**
                          * If New Point -> Show form -> Ask Point name
                          */}
-                        {newPoint && <NewPoint />}
+                        {newPoint && <NewPoint onPointSave={this.handlePointSave} />}
 
                         {/**
                          * Show exist Points
@@ -154,11 +150,6 @@ export default class GoogleMap extends Component {
                             <PointItem key={point.id}
                                        point={point}
                                        onMarkPointFromList={this.markPointFromList}
-                                       checkedPoint={this.state.checkedPoint}
-                                       editablePoint={this.state.editablePoint}
-                                       pointName={this.state.pointName}
-                                       onPointEditable={this.handlePointEditing}
-                                       onChangePoint={this.handleChangePoint}
                                        onPointSave={this.handlePointSave}
                             />
                         )}

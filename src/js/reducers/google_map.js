@@ -23,6 +23,10 @@ export default function map(state = initialState, action) {
             return {...state, newPoint: action.payload}
         }
 
+        case ACTIONS.CREATE_NOTE: {
+            return {...state, newNote: action.payload}
+        }
+
         case ACTIONS.FINISH_EDIT: {
             return {...state, ...action.payload}
         }

@@ -31,19 +31,12 @@ export default class NewPoint extends PureComponent {
      * Save New Point Name (from Local state to Global state)
      * @param event
      */
-    handlePointSave = (event) => {
+    newPointSave = (event) => {
         event.preventDefault()
 
-        const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-(' //todo
-        const id = event.target.parentNode.parentNode.dataset.id
-
-        this.props.dispatch(changePoint(id, pointName))
-        this.props.dispatch(finishEdit({
-            newPoint: false,
-            editablePoint: null
-        }))
+        const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-('
+        this.props.onPointSave(event, pointName)
         this.setState({pointName: ''})
-
     }
 
     render() {
@@ -55,7 +48,7 @@ export default class NewPoint extends PureComponent {
             <li data-id={newPoint}
                 className="right-side__point">
                 <div className="edit-li">
-                    <form onSubmit={this.handlePointSave}>
+                    <form onSubmit={this.newPointSave}>
                                     <textarea autoFocus type="text"
                                               className="edit-area"
                                               onChange={this.handleChangePoint}

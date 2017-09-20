@@ -5,6 +5,7 @@ import {
     CHANGE_NOTE,
     CHECK_POINT,
     CREATE_POINT,
+    CREATE_NOTE,
     DELETE_NOTE,
     DELETE_POINT,
     FINISH_EDIT,
@@ -52,7 +53,6 @@ export const addNote = (id, note, noteId) => {
 }
 
 
-
 export const changeNote = (id, note, noteId) => {
     return {
         type: CHANGE_NOTE,
@@ -75,6 +75,7 @@ export const deleteNote = (id, noteId) => {
     }
 }
 
+
 export const isNewPoint = (markerId) => {
     return {
         type: CREATE_POINT,
@@ -82,12 +83,14 @@ export const isNewPoint = (markerId) => {
     }
 }
 
+
 export const checkPoint = (id) => {
     return {
         type: CHECK_POINT,
         payload: id
     }
 }
+
 
 export const finishEdit = (obj) => {
     return {
@@ -100,6 +103,14 @@ export const mapLoaded = (value) => {
     return {
         type: MAP_LOADED,
         payload: value
+    }
+}
+
+
+export const isNewNote = (id) => {
+    return {
+        type: CREATE_NOTE,
+        payload: id
     }
 }
 
