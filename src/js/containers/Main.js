@@ -1,14 +1,15 @@
 import React, {Component} from 'react'
-import GoogleMap from '../components/google_map'
+import {connect} from 'react-redux'
+import GoogleMap from '../components/GoogleMap'
+import {
+    ApiLoaded
+} from '../actions/MainActions'
 
-
+@connect(({map}) => ({map}))
 export default class Main extends Component {
     constructor(props) {
         super(props)
 
-        this.state = {
-            gapiLoaded: false,
-        }
     }
 
     /**
@@ -16,7 +17,7 @@ export default class Main extends Component {
      */
     componentWillMount() {
         this.loadApiScript().then(() => {
-            this.setState({gapiLoaded: true})
+            this.props.dispatch(ApiLoaded(true))
         })
     }
 
@@ -36,7 +37,7 @@ export default class Main extends Component {
 
     render() {
         return (
-            <GoogleMap gapiLoaded={this.state.gapiLoaded}/>
+            <GoogleMap gApiLoaded={this.props.map.gApiLoaded}/>
         )
     }
 }

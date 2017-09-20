@@ -3,9 +3,13 @@ import {
     ADD_POINT,
     CHANGE_POINT,
     CHANGE_NOTE,
+    CHECK_POINT,
+    CREATE_POINT,
     DELETE_NOTE,
-    DELETE_POINT
-} from '../constants'
+    DELETE_POINT,
+    FINISH_EDIT,
+    MAP_LOADED
+} from '../constants/constants'
 
 export const addPoint = (marker) => {
     return {
@@ -70,3 +74,33 @@ export const deleteNote = (id, noteId) => {
         }
     }
 }
+
+export const isNewPoint = (markerId) => {
+    return {
+        type: CREATE_POINT,
+        payload: markerId
+    }
+}
+
+export const checkPoint = (id) => {
+    return {
+        type: CHECK_POINT,
+        payload: id
+    }
+}
+
+export const finishEdit = (obj) => {
+    return {
+        type: FINISH_EDIT,
+        payload: obj
+    }
+}
+
+export const mapLoaded = (value) => {
+    return {
+        type: MAP_LOADED,
+        payload: value
+    }
+}
+
+

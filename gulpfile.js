@@ -3,7 +3,6 @@ const gulplog = require('gulplog')
 const debug = require('gulp-debug')
 const path = require('path')
 const named = require('vinyl-named')
-const webpack = require('webpack')
 const plumber = require('gulp-plumber')
 const uglify = require('gulp-uglify')
 const gulpif = require('gulp-if')
@@ -11,6 +10,8 @@ const rev = require('gulp-rev')
 const stylus = require('gulp-stylus')
 const revReplace = require('gulp-rev-replace')
 const autoprefixer = require('gulp-autoprefixer')
+const clean = require('gulp-clean')
+const webpack = require('webpack')
 const webpackStream = require('webpack-stream')
 const webpackConfig = require('./webpack/webpack.config')
 
@@ -25,6 +26,11 @@ function end(done, debug = DEBUG) {
         }
     }
 }
+
+gulp.task('clean-js', function () {
+    return gulp.src('dist/js/*.js', {read: false})
+        .pipe(clean())
+})
 
 gulp.task('react', done => {
     return gulp.src('src/bootstrap.js')
@@ -60,7 +66,7 @@ gulp.task('stylus', () => {
         .pipe(gulpif(!DEBUG, gulp.dest('manifest')))
 })
 
-gulp.task('dist', ['react', 'assets', 'stylus'], () => {
+gulp.task('dist', ['clean-js', 'react', 'assets', 'stylus'], () => {
     return gulp.src('src/index.html')
         .pipe(gulpif(!DEBUG, revReplace({
             manifest: gulp.src('manifest/react.json'),
@@ -74,6 +80,7 @@ gulp.task('dist', ['react', 'assets', 'stylus'], () => {
 gulp.task('watch', () => {
     gulp.watch('src/assets/**/*', ['assets'])
     gulp.watch('src/index.html', ['dist'])
+    gulp.watch('src/js/**/*', ['react'])
     gulp.watch('src/**/*.styl', ['stylus'])
 })
 

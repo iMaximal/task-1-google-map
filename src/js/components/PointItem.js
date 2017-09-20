@@ -25,7 +25,7 @@ export default class PointItem extends Component {
      * If click on List -> Mark & Center map
      * @param event
      */
-    markPoint = event => {
+    markPoint = (event) => {
         this.props.onMarkPointFromList(event)
     }
 
@@ -33,7 +33,7 @@ export default class PointItem extends Component {
      * Save New Point Name (from Local state to Global state)
      * @param event
      */
-    PointSave = event => {
+    PointSave = (event) => {
         event.preventDefault()
         this.props.onPointSave(event)
     }
@@ -42,7 +42,7 @@ export default class PointItem extends Component {
      * Write input for Point (new / exist) to Local state
      * @param event
      */
-    handleInput = event => {
+    handleInput = (event) => {
         this.props.onChangePoint(event)
     }
 
@@ -50,7 +50,7 @@ export default class PointItem extends Component {
      * Write input for Note (new / exist) to Local state
      * @param event
      */
-    handleInputNote = event => {
+    handleInputNote = (event) => {
         const {value} = event.target
 
         this.setState({
@@ -62,7 +62,7 @@ export default class PointItem extends Component {
      * If click Edit Point -> Local state mark Point editable
      * @param event
      */
-    togglePointEditing = event => {
+    togglePointEditing = (event) => {
         event.preventDefault()
         // if editable field is exist -> nothing
         if (this.props.editablePoint || this.state.editableNote) return
@@ -76,7 +76,7 @@ export default class PointItem extends Component {
      * Remove Point from Global store and from Map
      * @param event
      */
-    handlePointRemove = event => {
+    handlePointRemove = (event) => {
         event.preventDefault()
         // if EDIT -> no ACTION
         if (this.props.pointName) return
@@ -90,7 +90,7 @@ export default class PointItem extends Component {
      * If newNote not null -> Show the add form in list
      * @param event
      */
-    createNote = event => {
+    createNote = (event) => {
         event.preventDefault()
         if (this.state.editableNote) return
         const id = event.target.parentNode.parentNode.dataset.id
@@ -103,7 +103,7 @@ export default class PointItem extends Component {
      * Save new Note from Local state to Global store
      * @param event
      */
-    handleNoteNewSave = event => {
+    handleNoteNewSave = (event) => {
         event.preventDefault()
         const noteName = this.state.noteName || 'Какое интересное имя'
         const parentId = event.target.closest('li').dataset.id
@@ -122,7 +122,7 @@ export default class PointItem extends Component {
      * If click Edit note -> get Note name from Global store for edit form -> save & mark input in Local state
      * @param event
      */
-    handleNoteEdit = event => {
+    handleNoteEdit = (event) => {
         event.preventDefault()
         // if editable field is exist -> nothing
         if (this.props.editablePoint || this.state.editableNote) return
@@ -143,7 +143,7 @@ export default class PointItem extends Component {
      * Cancel edit -> Change local params to null -> Data from Global store (nothing change)
      * @param event
      */
-    handleNoteCancel = event => {
+    handleNoteCancel = (event) => {
         event.preventDefault()
 
         this.setState({
@@ -158,7 +158,7 @@ export default class PointItem extends Component {
      * Write Note data from Local state to Global store
      * @param event
      */
-    handleNoteSave = event => {
+    handleNoteSave = (event) => {
         event.preventDefault()
 
         const noteName = this.state.noteName || 'Нельзя менять на пустое имя'
@@ -179,7 +179,7 @@ export default class PointItem extends Component {
      * Delete Note from Global store
      * @param event
      */
-    handleNoteRemove = event => {
+    handleNoteRemove = (event) => {
         event.preventDefault()
 
         const parentId = event.target.closest('li').dataset.id

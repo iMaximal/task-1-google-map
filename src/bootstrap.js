@@ -1,2 +1,2 @@
-import 'babel-polyfill'
-System.import('./js')
+import Main from './js/index'
+export default Main

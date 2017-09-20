@@ -4,27 +4,27 @@ import {connect} from 'react-redux'
 @connect(({markers}) => ({markers}))
 export default class NoteItem extends Component {
 
-    NoteSave = event => {
+    NoteSave = (event) => {
         event.preventDefault()
         this.props.onNoteSave(event)
     }
 
-    NoteCancel = event => {
+    NoteCancel = (event) => {
         event.preventDefault()
         this.props.onNoteCancel(event)
     }
 
-    InputNote = event => {
+    InputNote = (event) => {
         event.preventDefault()
         this.props.onInputNote(event)
     }
 
-    NoteEdit = event => {
+    NoteEdit = (event) => {
         event.preventDefault()
         this.props.onNoteEdit(event)
     }
 
-    NoteRemove = event => {
+    NoteRemove = (event) => {
         event.preventDefault()
         this.props.onNoteRemove(event)
     }

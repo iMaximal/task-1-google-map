@@ -1,29 +1,38 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import NewPoint from './NewPoint'
 import PointItem from './PointItem'
 import {
     addPoint,
-    changePoint } from '../actions'
+    changePoint,
+    checkPoint,
+    finishEdit,
+    isNewPoint,
+    mapLoaded
+} from '../actions'
 
 
 @connect(({markers}) => ({markers}))
+@connect(({map}) => ({map}))
 export default class GoogleMap extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            mapInitialized: false,
-            newPoint: false,
-            pointName: '',
-            editablePoint: null,
-            checkedPoint: null
-        }
+
+        // this.state = {
+        //     mapInitialized: false,
+        //     newPoint: false,
+        //     pointName: '',
+        //     editablePoint: null,
+        //     checkedPoint: null
+        // }
+
         this._mapContainer = null
         this._map = null
         this._infoWindow = null
     }
 
     // Adds a marker to the map and push to the array (Global store).
-    addMarker = location => {
+    addMarker = (location) => {
         let markerId = Date.now() + Math.random().toString()
         let marker = new window.google.maps.Marker({
             position: location,
@@ -43,11 +52,8 @@ export default class GoogleMap extends Component {
             this.markPointFromMap(marker)
         })
 
-        this.setState(prevState => ({
-            newPoint: markerId
-        }))
-
         this.props.dispatch(addPoint(marker))
+        this.props.dispatch(isNewPoint(markerId))
 
     }
 
@@ -56,62 +62,29 @@ export default class GoogleMap extends Component {
      * @param id - Point id
      */
     markPointFromMap = ({id}) => {
-        this.setState({
-            checkedPoint: id
-        })
+        this.props.dispatch(checkPoint(id))
     }
 
     /**
      * If click on List -> Mark & Center map
      * @param event
      */
-    markPointFromList = event => {
-        let pointId = event.currentTarget.dataset.id
-        if (this.state.checkedPoint !== pointId) {
-            this.setState({
-                checkedPoint: pointId
-            })
+    markPointFromList = (event) => {
+        const pointId = event.currentTarget.dataset.id
+
+        if (this.props.map.checkedPoint !== pointId) {
+            this.props.dispatch(checkPoint(pointId))
         }
 
-        let elem = this.props.markers.find(point => point.id === pointId)
+        const elem = this.props.markers.find(point => point.id === pointId)
         this._map.setCenter(elem.position)
-    }
-
-    /**
-     * Save New Point Name (from Local state to Global state)
-     * @param event
-     */
-    handlePointSave = event => {
-        event.preventDefault()
-
-        const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-('
-        const id = event.target.parentNode.parentNode.dataset.id
-
-        this.props.dispatch( changePoint(id, pointName) )
-
-        this.setState({
-            newPoint: false,
-            pointName: '',
-            editablePoint: null
-        })
-    }
-
-    /**
-     * Write input for Point (new / exist) to Local state
-     * @param event
-     */
-    handleChangePoint = event => {
-        const {value} = event.target
-        this.setState({
-            pointName: value
-        })
     }
 
     /**
      * If click Edit Point -> Local state mark Point editable
      */
     handlePointEditing = (id, name) => {
-        this.setState({
+        this.setState({ //todo
             editablePoint: id,
             pointName: name
         })
@@ -129,31 +102,30 @@ export default class GoogleMap extends Component {
             mapTypeId: 'terrain'
         })
 
-        this.setState({mapInitialized: true})
+        this.props.dispatch(mapLoaded(true))
 
         // Define an info window on the map.
         this._infoWindow = new window.google.maps.InfoWindow()
 
         // This event listener will call addMarker() when the map is clicked.
-        this._map.addListener('click', event => {
-                // if editable field is exist -> nothing
-                if (this.state.editablePoint || this.state.editableNote) return
-                this.addMarker(event.latLng)
-            }
+        this._map.addListener('click', (event) => {
+            // if editable field is exist -> nothing
+            if (this.props.map.editablePoint || this.props.map.editableNote) return // todo
+            this.addMarker(event.latLng)
+        }
         )
 
     }
 
     render() {
-        if (this.props.gapiLoaded && !this.state.mapInitialized) {
+        if (this.props.map.gApiLoaded && !this.props.map.mapInitialized) { //todo
             setTimeout(() => {
                 this._initMap()
             }, 4)
         }
 
         const {markers} = this.props
-        const {pointName} = this.state
-        const {newPoint} = this.state
+        const {newPoint} = this.props.map
 
         return (
 
@@ -166,36 +138,18 @@ export default class GoogleMap extends Component {
                 }} className="main"/>
 
                 {/**
-                * Points and their Notes
-                */}
+                 * Points and their Notes
+                 */}
                 <div id="right-side">
                     <ul className="right-side__list">
                         {/**
-                        * If New Point -> Show form -> Ask Point name
-                        */}
-                        {newPoint && <li data-id={newPoint}
-                                         className="right-side__point">
-                            <div className="edit-li">
-                                <form onSubmit={this.handlePointSave}>
-                                    <textarea autoFocus type="text"
-                                              className="edit-area"
-                                              onChange={this.handleChangePoint}
-                                              value={pointName}>
-                                    </textarea>
-                                    <div className="edit-controls">
-                                        <button
-                                            className="edit-ok">OK
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div id="box"></div>
-                        </li>
-                        }
+                         * If New Point -> Show form -> Ask Point name
+                         */}
+                        {newPoint && <NewPoint />}
 
                         {/**
-                        * Show exist Points
-                        */}
+                         * Show exist Points
+                         */}
                         {markers.map(point =>
                             <PointItem key={point.id}
                                        point={point}

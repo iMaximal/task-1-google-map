@@ -1,8 +1,8 @@
-import * as ACTIONS from '../constants'
+import * as ACTIONS from '../constants/constants'
 
 const initialState = []
 
-export default function (state = initialState, action) {
+export default function markers(state = initialState, action) {
     switch (action.type) {
         case ACTIONS.ADD_POINT: {
             const marker = action.payload
@@ -12,11 +12,11 @@ export default function (state = initialState, action) {
         case ACTIONS.CHANGE_POINT: {
             const {id, pointName} = action.payload
             return state.map(item => {
-                    if (item.id === id) {
-                        item.name = pointName
-                    }
-                    return item
+                if (item.id === id) {
+                    item.name = pointName
                 }
+                return item
+            }
             )
         }
 
@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
 
 
         case ACTIONS.CHANGE_NOTE: {
-            const { id, note, noteId } = action.payload
+            const {id, note, noteId} = action.payload
             let newState = [...state]
             const index = newState.findIndex(point => point.id === id)
             newState[index].notes.forEach(item => item.hasOwnProperty(noteId) ? item[noteId] = note : false)

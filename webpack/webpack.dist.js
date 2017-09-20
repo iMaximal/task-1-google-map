@@ -4,7 +4,7 @@ const webpack = require('webpack')
 module.exports = {
     devtool: false,
     output: {
-        filename: '[chunkhash:12].js'
+        filename: '[name].js'
     },
     plugins: [
         new AssetsPlugin({
