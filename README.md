@@ -4,6 +4,7 @@ Devvela - нехорошие люди. Не дали фидбэк. Не ходи
 Моё первое тестовое :-)
 
 2 Версии: чистый JS и React + Redux
+Вспомогательные технологии: Gulp + Webpack, Stylus, Express
 
 ## Installation
 ```bash
