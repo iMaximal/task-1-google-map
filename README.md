@@ -1,9 +1,11 @@
 # Google Map with React + Redux
 
 Devvela - нехорошие люди. Не дали фидбэк. Не ходите к ним.
+
 Моё первое тестовое :-)
 
 2 Версии: чистый JS и React + Redux
+
 Вспомогательные технологии: Gulp + Webpack, Stylus, Express
 
 ## Installation
