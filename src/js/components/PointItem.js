@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import NewNote from './NewNote'
 import NoteItem from './NoteItem'
 import {
-    addNote,
     deletePoint,
     changeMapStore,
     isNewNote
@@ -15,7 +15,6 @@ export default class PointItem extends Component {
         super(props)
         this.state = {
             pointName: '',
-            noteName: ''
         }
     }
 
@@ -53,17 +52,6 @@ export default class PointItem extends Component {
         })
     }
 
-    /**
-     * Write input for new Note to Local state
-     * @param event
-     */
-    InputNoteHandler = (event) => {
-        const {value} = event.target
-
-        this.setState({
-            noteName: value
-        })
-    }
 
     /**
      * If click Edit Point -> Global state mark Point editable
@@ -105,45 +93,19 @@ export default class PointItem extends Component {
      */
     createNote = (id, event) => {
         event.preventDefault()
-        if (this.props.map.editableNote) return
+        if (this.props.map.editablePoint || this.props.map.editableNote) return
         this.props.dispatch(isNewNote(id))
-    }
-
-    /**
-     * Save new Note from Local state to Global store
-     * @param parentId - Note ID
-     * @param event
-     */
-    NoteNewSaveHandler = (parentId, event) => {
-        event.preventDefault()
-        const noteName = this.state.noteName || 'Какое интересное имя'
-        const makeId = Date.now() + Math.random().toString()
-
-        this.props.dispatch(addNote(parentId, noteName, makeId))
-        this.props.dispatch(changeMapStore({
-            newNote: false,
-            editableNote: null
-        }))
-        this.setState({
-            noteName: ''
-        })
     }
 
 
     render() {
 
         const {id, name, notes} = this.props.point
-        const {pointName, noteName} = this.state
+        const {pointName} = this.state
 
-        return (
-            <li onClick={this.markPoint.bind(this, id)}
-                key={id}
-                className={this.props.map.checkedPoint === id ? 'right-side__point checked' : 'right-side__point'}>
-                {/**
-                 * If editable -> Show Edit form
-                 */}
-                {this.props.map.editablePoint === id &&
-                <div className="edit-li">
+        let pointBody
+        if (this.props.map.editablePoint === id) {
+            pointBody = ( <div className="edit-li">
                     <form onSubmit={this.PointSave.bind(this, id)}>
                          <textarea autoFocus
                                    className="edit-area"
@@ -155,52 +117,42 @@ export default class PointItem extends Component {
                         </div>
                     </form>
                 </div>
-                || <div>
+            )
+        } else {
+            pointBody = (
+                <div>
                     {name}
-                </div>}
-
-                <div className="controls-container">
-                    <a onClick={this.togglePointEditing.bind(this, id, name)}
-                       href=""
-                       className="controls"
-                       title="Edit">Edit</a>&nbsp;
-                    <a onClick={this.createNote.bind(this, id)}
-                       href=""
-                       className="controls"
-                       title="Add">Add</a>&nbsp;
-                    <a onClick={this.PointRemoveHandler.bind(this, id)}
-                       href=""
-                       className="controls"
-                       title="Remove">Remove</a>
                 </div>
+            )
+        }
 
-                {this.props.map.newNote === id &&
-                <ul>
-                    <li>
-                        <div className="edit-li">
-                            <form onSubmit={this.NoteNewSaveHandler.bind(this, id)}>
-                                 <textarea autoFocus
-                                           className="edit-area"
-                                           placeholder="Введите описание объекта"
-                                           onChange={this.InputNoteHandler}
-                                           value={noteName}>
-                                 </textarea>
-                                <div className="edit-controls">
-                                    <button type="submit"
-                                            className="edit-ok">OK
-                                    </button>
-                                    &nbsp;
-                                    <button type="button"
-                                            onClick={this.handleNoteCancel}
-                                            className="edit-cancel">CANCEL
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div id="box"></div>
-                    </li>
-                </ul>
-                }
+        let controlButtons = (
+            <div className="controls-container">
+                <a onClick={this.togglePointEditing.bind(this, id, name)}
+                   href=""
+                   className="controls"
+                   title="Edit">Edit</a>&nbsp;
+                <a onClick={this.createNote.bind(this, id)}
+                   href=""
+                   className="controls"
+                   title="Add">Add</a>&nbsp;
+                <a onClick={this.PointRemoveHandler.bind(this, id)}
+                   href=""
+                   className="controls"
+                   title="Remove">Remove</a>
+            </div>
+        )
+
+        return (
+            <li onClick={this.markPoint.bind(this, id)}
+                key={id}
+                className={this.props.map.checkedPoint === id ? 'right-side__point checked' : 'right-side__point'}>
+
+                {pointBody}
+
+                {controlButtons}
+
+                {this.props.map.newNote === id && <NewNote id={id} /> }
 
 
                 {(this.props.point.notes.length !== 0) &&
