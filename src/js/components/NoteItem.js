@@ -18,7 +18,7 @@ export default class NoteItem extends PureComponent {
     NoteEditHandler = (key, event) => {
         event.preventDefault()
         // if editable field is exist -> nothing
-        if (this.props.map.editablePoint || this.props.map.editableNote) return false
+        if (this.props.map.editablePoint || this.props.map.editableNote) return
 
         this.props.dispatch(changeMapStore({
             editableNote: key
@@ -75,8 +75,6 @@ export default class NoteItem extends PureComponent {
             <ul>
                 {this.props.notes.map(note => Object.entries(note).map(([key, value]) => (
                     <li key={key}
-                        data-id={parentId}
-                        data-nkey={key}
                         className="right-side__point">
 
                         {/**

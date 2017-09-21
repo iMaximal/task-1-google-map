@@ -8,7 +8,7 @@ const initialState = {
     mapInitialized: false,
     newPoint: false,
 }
-// todo [name]:
+
 export default function map(state = initialState, action) {
     switch (action.type) {
         case ACTIONS.API_LOADED: {

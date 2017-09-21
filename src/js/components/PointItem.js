@@ -3,9 +3,7 @@ import {connect} from 'react-redux'
 import NoteItem from './NoteItem'
 import {
     addNote,
-    changeNote,
     deletePoint,
-    deleteNote,
     changeMapStore,
     isNewNote
 } from '../actions'
@@ -23,21 +21,22 @@ export default class PointItem extends Component {
 
     /**
      * If click on List -> Mark & Center map
-     * @param event
+     * @param pointId
      */
-    markPoint = (event) => {
-        this.props.onMarkPointFromList(event)
+    markPoint = (pointId) => {
+        this.props.onMarkPointFromList(pointId)
     }
 
     /**
      * Save New Point Name (from Local state to Global state)
+     * @param id - Point ID
      * @param event
      */
-    PointSave = (event) => {
+    PointSave = (id, event) => {
         event.preventDefault()
 
         const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-('
-        this.props.onPointSave(event, pointName)
+        this.props.onPointSave(event, id, pointName)
         this.setState({
             pointName: ''
         })
@@ -55,10 +54,10 @@ export default class PointItem extends Component {
     }
 
     /**
-     * Write input for Note (new / exist) to Local state
+     * Write input for new Note to Local state
      * @param event
      */
-    InputNotehandler = (event) => {
+    InputNoteHandler = (event) => {
         const {value} = event.target
 
         this.setState({
@@ -68,32 +67,32 @@ export default class PointItem extends Component {
 
     /**
      * If click Edit Point -> Global state mark Point editable
+     * @param id - Point ID
+     * @param text - Point text value
      * @param event
      */
-    togglePointEditing = (event) => {
+    togglePointEditing = (id, text, event) => {
         event.preventDefault()
         // if editable field is exist -> nothing
         if (this.props.map.editablePoint || this.props.map.editableNote) return
-        const id = event.target.parentNode.parentNode.dataset.id
-        let elem = this.props.markers.find(point => point.id === id)
-        let name = elem.name
-        this.props.dispatch(changeMapStore({ //todo change name in all files
+
+        this.props.dispatch(changeMapStore({
             editablePoint: id,
         }))
         this.setState({
-            pointName: name
+            pointName: text
         })
     }
 
     /**
      * Remove Point from Global store and from Map
+     * @param id - Point ID
      * @param event
      */
-    handlePointRemove = (event) => {
+    PointRemoveHandler = (id, event) => {
         event.preventDefault()
         // if EDIT -> no ACTION
         if (this.state.pointName) return
-        const id = event.target.parentNode.parentNode.dataset.id
         const point = this.props.markers.find(point => point.id === id)
         point.setMap(null)
         this.props.dispatch(deletePoint(id))
@@ -101,27 +100,27 @@ export default class PointItem extends Component {
 
     /**
      * If newNote not null -> Show the add form in list
+     * @param id - Note ID
      * @param event
      */
-    createNote = (event) => {
+    createNote = (id, event) => {
         event.preventDefault()
         if (this.props.map.editableNote) return
-        const id = event.target.parentNode.parentNode.dataset.id
         this.props.dispatch(isNewNote(id))
     }
 
     /**
      * Save new Note from Local state to Global store
+     * @param parentId - Note ID
      * @param event
      */
-    NoteNewSaveHandler = (event) => {
+    NoteNewSaveHandler = (parentId, event) => {
         event.preventDefault()
         const noteName = this.state.noteName || 'Какое интересное имя'
-        const parentId = event.target.closest('li').dataset.id
         const makeId = Date.now() + Math.random().toString()
 
         this.props.dispatch(addNote(parentId, noteName, makeId))
-        this.props.dispatch(changeMapStore({ //todo change name in all files
+        this.props.dispatch(changeMapStore({
             newNote: false,
             editableNote: null
         }))
@@ -134,25 +133,23 @@ export default class PointItem extends Component {
     render() {
 
         const {id, name, notes} = this.props.point
-        const {noteName} = this.state
+        const {pointName, noteName} = this.state
 
         return (
-            <li data-id={id}
-                onClick={this.markPoint}
-                key={Math.random()}
+            <li onClick={this.markPoint.bind(this, id)}
+                key={id}
                 className={this.props.map.checkedPoint === id ? 'right-side__point checked' : 'right-side__point'}>
                 {/**
                  * If editable -> Show Edit form
                  */}
                 {this.props.map.editablePoint === id &&
                 <div className="edit-li">
-                    <form data-id={id}
-                          onSubmit={this.PointSave}>
-                                     <textarea autoFocus
-                                               className="edit-area"
-                                               onChange={this.InputPointHandler}
-                                               value={this.state.pointName}>
-                                     </textarea>
+                    <form onSubmit={this.PointSave.bind(this, id)}>
+                         <textarea autoFocus
+                                   className="edit-area"
+                                   onChange={this.InputPointHandler}
+                                   value={pointName}>
+                         </textarea>
                         <div className="edit-controls">
                             <button className="edit-ok">OK</button>
                         </div>
@@ -163,15 +160,15 @@ export default class PointItem extends Component {
                 </div>}
 
                 <div className="controls-container">
-                    <a onClick={this.togglePointEditing}
+                    <a onClick={this.togglePointEditing.bind(this, id, name)}
                        href=""
                        className="controls"
                        title="Edit">Edit</a>&nbsp;
-                    <a onClick={this.createNote}
+                    <a onClick={this.createNote.bind(this, id)}
                        href=""
                        className="controls"
                        title="Add">Add</a>&nbsp;
-                    <a onClick={this.handlePointRemove}
+                    <a onClick={this.PointRemoveHandler.bind(this, id)}
                        href=""
                        className="controls"
                        title="Remove">Remove</a>
@@ -179,15 +176,15 @@ export default class PointItem extends Component {
 
                 {this.props.map.newNote === id &&
                 <ul>
-                    <li data-id={id}>
+                    <li>
                         <div className="edit-li">
-                            <form onSubmit={this.NoteNewSaveHandler}>
-                                             <textarea autoFocus
-                                                       className="edit-area"
-                                                       placeholder="Введите описание объекта"
-                                                       onChange={this.InputNotehandler}
-                                                       value={noteName}>
-                                             </textarea>
+                            <form onSubmit={this.NoteNewSaveHandler.bind(this, id)}>
+                                 <textarea autoFocus
+                                           className="edit-area"
+                                           placeholder="Введите описание объекта"
+                                           onChange={this.InputNoteHandler}
+                                           value={noteName}>
+                                 </textarea>
                                 <div className="edit-controls">
                                     <button type="submit"
                                             className="edit-ok">OK

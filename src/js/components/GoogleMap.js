@@ -58,10 +58,9 @@ export default class GoogleMap extends Component {
 
     /**
      * If click on List -> Mark & Center map
-     * @param event
+     * @param pointId
      */
-    markPointFromList = (event) => {
-        const pointId = event.currentTarget.dataset.id
+    markPointFromList = (pointId) => {
 
         if (this.props.map.checkedPoint !== pointId) {
             this.props.dispatch(checkPoint(pointId))
@@ -71,10 +70,8 @@ export default class GoogleMap extends Component {
         this._map.setCenter(elem.position)
     }
 
-    handlePointSave = (event, pointName) => {
+    handlePointSave = (event, id, pointName) => {
         event.preventDefault()
-
-        const id = event.target.parentNode.parentNode.dataset.id
 
         this.props.dispatch(changePoint(id, pointName))
         this.props.dispatch(changeMapStore({

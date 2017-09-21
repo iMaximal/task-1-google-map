@@ -1,16 +1,11 @@
 import React, {PureComponent} from "react"
 import {connect} from 'react-redux'
-import {
-    changePoint,
-    finishEdit
-} from '../actions'
 
 @connect(({map}) => ({map}))
 export default class NewPoint extends PureComponent {
 
     constructor(props) {
         super(props)
-
         this.state = {
             pointName: '',
         }
@@ -29,13 +24,14 @@ export default class NewPoint extends PureComponent {
 
     /**
      * Save New Point Name (from Local state to Global state)
+     * @param id - Point ID
      * @param event
      */
-    newPointSave = (event) => {
+    newPointSave = (id, event) => {
         event.preventDefault()
 
         const pointName = this.state.pointName.trim() || 'Забыли назвать точку :-('
-        this.props.onPointSave(event, pointName)
+        this.props.onPointSave(event, id, pointName)
         this.setState({
             pointName: ''
         })
@@ -47,19 +43,18 @@ export default class NewPoint extends PureComponent {
         const {newPoint} = this.props.map
 
         return (
-            <li data-id={newPoint}
-                className="right-side__point">
+            <li className="right-side__point">
                 <div className="edit-li">
-                    <form onSubmit={this.newPointSave}>
-                                    <textarea autoFocus type="text"
-                                              className="edit-area"
-                                              onChange={this.handleChangePoint}
-                                              value={pointName}
-                                    >
-                                    </textarea>
+                    <form onSubmit={this.newPointSave.bind(this, newPoint)}>
+                        <textarea autoFocus type="text"
+                                  className="edit-area"
+                                  onChange={this.handleChangePoint}
+                                  value={pointName}
+                        >
+                        </textarea>
                         <div className="edit-controls">
-                            <button
-                                className="edit-ok">OK
+                            <button className="edit-ok">
+                                OK
                             </button>
                         </div>
                     </form>
