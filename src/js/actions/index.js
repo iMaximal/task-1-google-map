@@ -1,14 +1,14 @@
 import {
     ADD_NOTE,
     ADD_POINT,
-    CHANGE_POINT,
+    CHANGE_MAP_STORE,
     CHANGE_NOTE,
+    CHANGE_POINT,
     CHECK_POINT,
     CREATE_POINT,
     CREATE_NOTE,
     DELETE_NOTE,
     DELETE_POINT,
-    FINISH_EDIT,
     MAP_LOADED
 } from '../constants/constants'
 
@@ -92,9 +92,9 @@ export const checkPoint = (id) => {
 }
 
 
-export const finishEdit = (obj) => {
+export const changeMapStore = (obj) => {
     return {
-        type: FINISH_EDIT,
+        type: CHANGE_MAP_STORE,
         payload: obj
     }
 }

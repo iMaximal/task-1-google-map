@@ -6,14 +6,13 @@ import {
     addPoint,
     changePoint,
     checkPoint,
-    finishEdit,
+    changeMapStore,
     isNewPoint,
     mapLoaded
 } from '../actions'
 
 
-@connect(({markers}) => ({markers}))
-@connect(({map}) => ({map}))
+@connect(({map, markers}) => ({map, markers}))
 export default class GoogleMap extends Component {
     constructor(props) {
         super(props)
@@ -78,7 +77,7 @@ export default class GoogleMap extends Component {
         const id = event.target.parentNode.parentNode.dataset.id
 
         this.props.dispatch(changePoint(id, pointName))
-        this.props.dispatch(finishEdit({
+        this.props.dispatch(changeMapStore({
             newPoint: false,
             editablePoint: null
         }))

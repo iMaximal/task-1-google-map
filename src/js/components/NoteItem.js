@@ -1,47 +1,27 @@
 import React, {PureComponent} from "react"
+import ReactDOM from "react-dom"
 import {connect} from 'react-redux'
 import {
     changeNote,
     deleteNote,
-    finishEdit,
+    changeMapStore,
 } from '../actions'
 
-@connect(({markers}) => ({markers}))
-@connect(({map}) => ({map}))
+@connect(({map, markers}) => ({map, markers}))
 export default class NoteItem extends React.Component { // todo
-
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            noteName: ''
-        }
-    }
 
     /**
      * If click Edit note -> get Note name from Global store for edit form -> Save & mark input in Local state
      * @param event
      */
-    NoteEditHandler = (event) => {
+    NoteEditHandler = (key, value, event) => {
         event.preventDefault()
         // if editable field is exist -> nothing
         if (this.props.map.editablePoint || this.props.map.editableNote) return
-        const id = event.target.closest('li').dataset.id
-        console.log(id);
-        const noteId = event.target.closest('li').dataset.nkey
-        console.log(noteId);
-        let elem = this.props.markers.find(point => point.id === id)
-        console.log(elem);
-        let name
-        elem.notes.forEach(item => item.hasOwnProperty(noteId) ? name = item[noteId] : false)
-        console.log('name', name)
-        this.props.dispatch(finishEdit({ //todo change name in all files
-            editableNote: noteId
-        }))
-        this.setState(prevState => ({
-            noteName: name
-        }))
 
+        this.props.dispatch(changeMapStore({ //todo change name in all files
+            editableNote: key
+        }))
 
     }
 
@@ -52,13 +32,13 @@ export default class NoteItem extends React.Component { // todo
     NoteCancelHandler = (event) => {
         event.preventDefault()
 
-        this.props.dispatch(finishEdit({ //todo change name in all files
+        this.props.dispatch(changeMapStore({ //todo change name in all files
             newNote: false,
             editableNote: null
         }))
 
         this.setState({
-            noteName: ''
+            noteNameEdit: ''
         })
 
     }
@@ -70,19 +50,19 @@ export default class NoteItem extends React.Component { // todo
     NoteSaveHandler = (event) => {
         event.preventDefault()
 
-        const noteName = this.state.noteName || 'Нельзя менять на пустое имя'
+        const noteNameEdit = ReactDOM.findDOMNode(this.refs.noteEditable).value.trim() || 'Нельзя менять на пустое имя'
         const noteKey = event.target.closest('li').dataset.nkey
         const parentId = event.target.closest('li').dataset.id
 
-        this.props.dispatch(changeNote(parentId, noteName, noteKey))
+        this.props.dispatch(changeNote(parentId, noteNameEdit, noteKey))
 
-        this.props.dispatch(finishEdit({ //todo change name in all files
+        this.props.dispatch(changeMapStore({ //todo change name in all files
             newNote: false,
             editableNote: null
         }))
 
         this.setState({
-            noteName: ''
+            noteNameEdit: ''
         })
     }
 
@@ -93,6 +73,9 @@ export default class NoteItem extends React.Component { // todo
     NoteRemoveHandler = (event) => {
         event.preventDefault()
 
+        // if editable field is exist -> nothing
+        if (this.props.map.editablePoint || this.props.map.editableNote) return
+
         const parentId = event.target.closest('li').dataset.id
         const noteId = event.target.closest('li').dataset.nkey
 
@@ -100,22 +83,8 @@ export default class NoteItem extends React.Component { // todo
 
     }
 
-    /**
-     * Write input for Note (new / exist) to Local state
-     * @param event
-     */
-    InputNoteHandler = event => {
-        const {value} = event.target
-
-        this.setState({
-            noteName: value
-        })
-    }
-
 
     render() {
-
-        const {noteName} = this.state
 
         return (
 
@@ -133,11 +102,12 @@ export default class NoteItem extends React.Component { // todo
                         {this.props.map.editableNote === key &&
                         <div className="edit-li">
                             <form onSubmit={this.NoteSaveHandler}>
-                                                 <textarea autoFocus
-                                                           className="edit-area"
-                                                           onChange={this.InputNoteHandler}
-                                                           value={noteName}>
-                                                 </textarea>
+                                <textarea autoFocus
+                                          className="edit-area"
+                                          defaultValue={value}
+                                          ref="noteEditable"
+                                >
+                                </textarea>
                                 <div className="edit-controls">
                                     <button className="edit-ok">OK
                                     </button>
@@ -153,13 +123,13 @@ export default class NoteItem extends React.Component { // todo
                         }
 
                         <div className="controls-container">
-                            <a onClick={this.NoteEditHandler} href=""
+                            <a onClick={this.NoteEditHandler.bind(this, key, value)} href=""
                                className="controls"
-                               title="EditNotes">Edit</a> &nbsp;
+                               title="Edit Notes">Edit</a> &nbsp;
                             <a onClick={this.NoteRemoveHandler}
                                href=""
                                className="controls"
-                               title="RemoveNotes">Remove</a>
+                               title="Remove Notes">Remove</a>
                         </div>
                     </li>
                 )))}

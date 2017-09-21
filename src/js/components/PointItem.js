@@ -6,12 +6,11 @@ import {
     changeNote,
     deletePoint,
     deleteNote,
-    finishEdit,
+    changeMapStore,
     isNewNote
 } from '../actions'
 
-@connect(({markers}) => ({markers}))
-@connect(({map}) => ({map}))
+@connect(({map, markers}) => ({map, markers}))
 export default class PointItem extends Component {
 
     constructor(props) {
@@ -78,7 +77,7 @@ export default class PointItem extends Component {
         const id = event.target.parentNode.parentNode.dataset.id
         let elem = this.props.markers.find(point => point.id === id)
         let name = elem.name
-        this.props.dispatch(finishEdit({ //todo change name in all files
+        this.props.dispatch(changeMapStore({ //todo change name in all files
             editablePoint: id,
         }))
         this.setState({
@@ -122,12 +121,12 @@ export default class PointItem extends Component {
         const makeId = Date.now() + Math.random().toString()
 
         this.props.dispatch(addNote(parentId, noteName, makeId))
-        this.props.dispatch(finishEdit({ //todo change name in all files
+        this.props.dispatch(changeMapStore({ //todo change name in all files
             newNote: false,
             editableNote: null
         }))
         this.setState({
-            noteName: '',
+            noteName: ''
         })
     }
 

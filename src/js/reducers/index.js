@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import map from './google_map'
+import map from './map'
 import markers from './markers'
 
 export default combineReducers({
