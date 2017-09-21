@@ -1,9 +1,11 @@
 import React, {PureComponent} from "react"
 import {connect} from 'react-redux'
 import {
-    addNote,
     changeMapStore,
 } from '../actions'
+import {
+    addNote,
+} from '../actions/NoteActions'
 
 @connect(({map}) => ({map}))
 export default class NewPoint extends PureComponent {
@@ -75,6 +77,7 @@ export default class NewPoint extends PureComponent {
         )
 
         return (
+            <ul>
                 <li>
                     <div className="edit-li">
                         <form onSubmit={this.NoteNewSaveHandler.bind(this, id)}>
@@ -89,6 +92,7 @@ export default class NewPoint extends PureComponent {
                     </div>
                     <div id="box"></div>
                 </li>
+            </ul>
         )
     }
 }

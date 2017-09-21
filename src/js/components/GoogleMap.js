@@ -3,13 +3,15 @@ import {connect} from 'react-redux'
 import NewPoint from './NewPoint'
 import PointItem from './PointItem'
 import {
+    changeMapStore,
+    mapLoaded
+} from '../actions'
+import {
     addPoint,
     changePoint,
     checkPoint,
-    changeMapStore,
     isNewPoint,
-    mapLoaded
-} from '../actions'
+} from '../actions/PointActions'
 
 
 @connect(({map, markers}) => ({map, markers}))
@@ -24,8 +26,8 @@ export default class GoogleMap extends Component {
 
     // Adds a marker to the map and push to the array (Global store).
     addMarker = (location) => {
-        let markerId = Date.now() + Math.random().toString()
-        let marker = new window.google.maps.Marker({
+        const markerId = Date.now() + Math.random().toString()
+        const marker = new window.google.maps.Marker({
             position: location,
             map: this._map,
             draggable: true,
@@ -70,7 +72,7 @@ export default class GoogleMap extends Component {
         this._map.setCenter(elem.position)
     }
 
-    handlePointSave = (event, id, pointName) => {
+    PointSaveHandler = (event, id, pointName) => {
         event.preventDefault()
 
         this.props.dispatch(changePoint(id, pointName))
@@ -102,7 +104,7 @@ export default class GoogleMap extends Component {
         // This event listener will call addMarker() when the map is clicked.
         this._map.addListener('click', (event) => {
             // if editable field is exist -> nothing
-            if (this.props.map.editablePoint || this.props.map.editableNote) return // todo
+            if (this.props.map.editablePoint || this.props.map.editableNote) return
             this.addMarker(event.latLng)
         }
         )
@@ -110,7 +112,7 @@ export default class GoogleMap extends Component {
     }
 
     render() {
-        if (this.props.map.gApiLoaded && !this.props.map.mapInitialized) { //todo
+        if (this.props.map.gApiLoaded && !this.props.map.mapInitialized) {
             setTimeout(() => {
                 this._initMap()
             }, 4)
@@ -137,7 +139,7 @@ export default class GoogleMap extends Component {
                         {/**
                          * If New Point -> Show form -> Ask Point name
                          */}
-                        {newPoint && <NewPoint onPointSave={this.handlePointSave} />}
+                        {newPoint && <NewPoint onPointSave={this.PointSaveHandler} />}
 
                         {/**
                          * Show exist Points
@@ -146,7 +148,7 @@ export default class GoogleMap extends Component {
                             <PointItem key={point.id}
                                        point={point}
                                        onMarkPointFromList={this.markPointFromList}
-                                       onPointSave={this.handlePointSave}
+                                       onPointSave={this.PointSaveHandler}
                             />
                         )}
                     </ul>

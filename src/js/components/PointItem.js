@@ -3,10 +3,12 @@ import {connect} from 'react-redux'
 import NewNote from './NewNote'
 import NoteItem from './NoteItem'
 import {
-    deletePoint,
     changeMapStore,
-    isNewNote
 } from '../actions'
+import {
+    deletePoint,
+    isNewNote
+} from '../actions/PointActions'
 
 @connect(({map, markers}) => ({map, markers}))
 export default class PointItem extends Component {
@@ -105,7 +107,8 @@ export default class PointItem extends Component {
 
         let pointBody
         if (this.props.map.editablePoint === id) {
-            pointBody = ( <div className="edit-li">
+            pointBody = (
+                <div className="edit-li">
                     <form onSubmit={this.PointSave.bind(this, id)}>
                          <textarea autoFocus
                                    className="edit-area"
@@ -126,7 +129,7 @@ export default class PointItem extends Component {
             )
         }
 
-        let controlButtons = (
+        const controlButtons = (
             <div className="controls-container">
                 <a onClick={this.togglePointEditing.bind(this, id, name)}
                    href=""
@@ -152,7 +155,7 @@ export default class PointItem extends Component {
 
                 {controlButtons}
 
-                {this.props.map.newNote === id && <NewNote id={id} /> }
+                {this.props.map.newNote === id && <NewNote id={id}/>}
 
 
                 {(this.props.point.notes.length !== 0) &&

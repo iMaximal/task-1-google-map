@@ -2,10 +2,12 @@ import React, {PureComponent} from "react"
 import ReactDOM from "react-dom"
 import {connect} from 'react-redux'
 import {
-    changeNote,
-    deleteNote,
     changeMapStore,
 } from '../actions'
+import {
+    changeNote,
+    deleteNote,
+} from '../actions/NoteActions'
 
 @connect(({map, markers}) => ({map, markers}))
 export default class NoteItem extends PureComponent {
@@ -69,9 +71,18 @@ export default class NoteItem extends PureComponent {
 
         const {parentId} = this.props
 
+        const editControls = (
+            <div className="edit-controls">
+                <button className="edit-ok">OK
+                </button>
+                <button type="button"
+                        onClick={this.NoteCancelHandler}
+                        className="edit-cancel">CANCEL
+                </button>
+            </div>
+        )
+
         return (
-
-
             <ul>
                 {this.props.notes.map(note => Object.entries(note).map(([key, value]) => (
                     <li key={key}
@@ -89,14 +100,7 @@ export default class NoteItem extends PureComponent {
                                           ref="noteEditable"
                                 >
                                 </textarea>
-                                <div className="edit-controls">
-                                    <button className="edit-ok">OK
-                                    </button>
-                                    <button type="button"
-                                            onClick={this.NoteCancelHandler}
-                                            className="edit-cancel">CANCEL
-                                    </button>
-                                </div>
+                                {editControls}
                             </form>
                         </div>
                         ||
